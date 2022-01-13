@@ -29,8 +29,3 @@ func SaveFileAndReturnPath(file multipart.File, handler *multipart.FileHeader) (
 	_, _ = io.Copy(f, file)
 	return path, nil
 }
-
-// SaveDataToDB is saving data to db and returns id of new entry
-func SaveDataToDB(data string, isFile bool) int {
-	return 1
-}

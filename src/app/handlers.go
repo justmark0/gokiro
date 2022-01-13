@@ -26,7 +26,15 @@ func HandleUploadFile(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintln(w, "Internal server error")
 			return
 		}
-		id := SaveDataToDB(path, true)
+		id, err := CreateStorageItem(true, path)
+		if err != nil {
+			if err.Error() == "Not found" {
+				_, _ = fmt.Fprintln(w, "Item with such id not found")
+			} else {
+				_, _ = fmt.Fprintln(w, "Internal server error")
+			}
+			return
+		}
 		_, _ = fmt.Fprintln(w, "{\"id\":", id, "}")
 	} else {
 		_, _ = fmt.Fprintln(w, "Send POST method")
@@ -39,7 +47,15 @@ func HandleUploadText(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		var data []byte
 		_, _ = r.Body.Read(data)
-		id := SaveDataToDB(string(data), false)
+		id, err := CreateStorageItem(false, string(data))
+		if err != nil {
+			if err.Error() == "Not found" {
+				_, _ = fmt.Fprintln(w, "Item with such id not found")
+			} else {
+				_, _ = fmt.Fprintln(w, "Internal server error")
+			}
+			return
+		}
 		_, _ = fmt.Fprintln(w, "{\"id\":", id, "}")
 	} else {
 		_, _ = fmt.Fprintln(w, "Send POST method")
